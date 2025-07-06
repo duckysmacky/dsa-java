@@ -1,19 +1,19 @@
 package io.github.duckysmacky.dsa.data;
 
-/// A linked list which consists of nodes. Each node is connected to the next one, with the last out being connected to
-/// nothing. The `head` node is the beginning is the linked list.
+/// A linked list which consists of nodes. Each node is connected to the next one, with the last one being connected to
+/// nothing. The `head` node is the beginning of the list, while the `tail` is the end
 ///
 /// @param <E> the type of elements in a linked list
 public class LinkedList<E> {
     private Node<E> head;
     private Node<E> tail;
-    private int length;
+    private int size;
 
     /// Constructs an empty `Linked List`
     public LinkedList() {
         this.head = null;
         this.tail = null;
-        this.length = 0;
+        this.size = 0;
     }
 
     /// Construct a `Linked List` from predefined elements
@@ -29,10 +29,10 @@ public class LinkedList<E> {
         }
 
         this.tail = currentNode;
-        this.length = elements.length;
+        this.size = elements.length;
     }
 
-    /// Adds data to the start of the list
+    /// Adds data at the beginning of the list
     ///
     /// This is a `O(1)` operation
     public void addStart(E data) {
@@ -44,7 +44,7 @@ public class LinkedList<E> {
             this.tail = newNode;
 
         this.head = newNode;
-        this.length++;
+        this.size++;
     }
 
     /// Adds data to the end of the list
@@ -59,22 +59,22 @@ public class LinkedList<E> {
             this.head = newNode;
 
         this.tail = newNode;
-        this.length++;
+        this.size++;
     }
 
-    /// Adds data at the specified index
+    /// Adds data at the specified index. The value will be inserted right before the element at the provided index
     ///
     /// This is a `O(n)` operation
     public void addAt(int index, E data) {
         if (index == 0)
             addStart(data);
-        if (index == length - 1)
+        if (index == size - 1)
             addEnd(data);
 
         Node<E> newNode = new Node<>(data);
 
         Node<E> currentNode = this.head;
-        for (int i = 0; i < this.length; i++) {
+        for (int i = 0; i < this.size; i++) {
             if (i == index - 1) {
                 newNode.next = currentNode.next;
                 currentNode.next = newNode;
@@ -84,31 +84,28 @@ public class LinkedList<E> {
             currentNode = currentNode.next;
         }
 
-        this.length++;
+        this.size++;
     }
 
-    /// A shortcut for the `addEnd` method
+    /// Removes the element at the beginning of the list and returns it
     ///
     /// This is a `O(1)` operation
-    public void append(E data) {
-        addEnd(data);
-    }
-
-    /// Removes the node at the beginning of the list and returns its data
     ///
-    /// This is a `O(1)` operation
+    /// @return removed element
     public E removeStart() {
         Node<E> removedNode = this.head;
         if (removedNode == null) return null;
 
         this.head = removedNode.next;
-        this.length--;
+        this.size--;
         return removedNode.data;
     }
 
-    /// Removes the node at the end of the list and returns its data
+    /// Removes the element at the end of the list and returns it
     ///
     /// This is a `O(n)` operation
+    ///
+    /// @return removed element
     public E removeEnd() {
         if (this.head == null) return null;
 
@@ -123,22 +120,24 @@ public class LinkedList<E> {
             currentNode = currentNode.next;
         }
 
-        this.length--;
+        this.size--;
         return currentNode.data;
     }
 
-    /// Removes the node at the specified index and returns its data
+    /// Removes the element at the specified index and returns it
     ///
     /// This is a `O(n)` operation
+    ///
+    /// @return removed element
     public E removeAt(int index) {
         if (index == 0)
             return removeStart();
-        if (index == length - 1)
+        if (index == size - 1)
             return removeEnd();
 
         Node<E> removedNode = null;
         Node<E> currentNode = this.head;
-        for (int i = 0; i < this.length; i++) {
+        for (int i = 0; i < this.size; i++) {
             if (i == index - 1) {
                 removedNode = currentNode.next;
                 currentNode.next = currentNode.next.next;
@@ -150,38 +149,33 @@ public class LinkedList<E> {
 
         if (removedNode == null) return null;
 
-        this.length--;
+        this.size--;
         return removedNode.data;
     }
 
-    /// A shortcut for the `removeEnd` method
-    public E pop() {
-        return removeEnd();
-    }
-
-    /// Sets the data at the start of the list
+    /// Sets the value for the first element of the list
     ///
     /// This is a `O(1)` operation
-    public void setStart(E data) {
-        this.head.data = data;
+    public void setStart(E value) {
+        this.head.data = value;
     }
 
-    /// Sets the data at the end of the list
+    /// Sets the data for the last element of the list
     ///
     /// This is a `O(1)` operation
-    public void setEnd(E data) {
-        this.tail.data = data;
+    public void setEnd(E value) {
+        this.tail.data = value;
     }
 
-    /// Sets the data at the specified index
+    /// Sets the data for the element at the specified index
     ///
     /// This is a `O(n)` operation
-    public void setAt(int index, E data) {
+    public void setAt(int index, E value) {
         Node<E> currentNode = this.head;
 
-        for (int i = 0; i < this.length; i++) {
+        for (int i = 0; i < this.size; i++) {
             if (i == index) {
-                currentNode.data = data;
+                currentNode.data = value;
                 break;
             }
 
@@ -189,9 +183,49 @@ public class LinkedList<E> {
         }
     }
 
-    /// Returns the length of the list
-    public int getLength() {
-        return length;
+    /// Get the element at the beginning of the list
+    ///
+    /// This is a `O(1)` operation
+    ///
+    /// @return first element of the list
+    public E getFirst() {
+        if (this.head == null) return null;
+        return this.head.data;
+    }
+
+    /// Get the element at the end of the list
+    ///
+    /// This is a `O(1)` operation
+    ///
+    /// @return last element of the list
+    public E getLast() {
+        if (this.tail == null) return null;
+        return this.tail.data;
+    }
+
+    /// Get the element at the specified index
+    ///
+    /// This is a `O(n)` operation
+    ///
+    /// @return element at the specified index
+    public E getAt(int index) {
+        Node<E> currentNode = this.head;
+
+        for (int i = 0; i < this.size; i++) {
+            if (i == index)
+                return currentNode.data;
+
+            currentNode = currentNode.next;
+        }
+
+        return null;
+    }
+
+    /// Returns the size (length) of the list
+    ///
+    /// This is a `O(1)` operation
+    public int getSize() {
+        return size;
     }
 
     @Override
@@ -199,9 +233,9 @@ public class LinkedList<E> {
         StringBuilder builder = new StringBuilder("[");
         Node<E> currentNode = this.head;
 
-        for (int i = 0; i < this.length; i++) {
+        for (int i = 0; i < this.size; i++) {
             builder.append(currentNode.data);
-            if (i < this.length - 1)
+            if (i < this.size - 1)
                 builder.append(" -> ");
 
             currentNode = currentNode.next;
@@ -209,6 +243,13 @@ public class LinkedList<E> {
 
         builder.append("]");
         return builder.toString();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof DoublyLinkedList<?> list)
+            return this.toString().equals(list.toString());
+        return super.equals(obj);
     }
 
     /// The inner `Node` structure which contains the data and a reference to the next node in the list
@@ -231,7 +272,7 @@ public class LinkedList<E> {
         @Override
         public String toString() {
             String next = this.next == null ? "null" : this.next.data.toString();
-            return String.format("{data=%s, next=%s}", data.toString(), next);
+            return String.format("{%s -> %s}", data.toString(), next);
         }
     }
 }
