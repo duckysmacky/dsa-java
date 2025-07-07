@@ -1,5 +1,7 @@
 package io.github.duckysmacky.dsa.collections.stack;
 
+import java.util.NoSuchElementException;
+
 /// A `Stack` implementation which has a **dynamic** size (capacity). It is based on a `Singly Linked List`, where each
 /// element is connected to the next via nodes, which allows it to grow in size without reallocation
 ///
@@ -8,7 +10,7 @@ public class LinkedStack<E> implements Stack<E> {
     private int size;
     private Node<E> top;
 
-    /// Initiate a new `Sized Stack` of specified capacity
+    /// Initiate a new empty `Linked Stack`
     public LinkedStack() {
         this.size = 0;
         this.top = null;
@@ -24,7 +26,13 @@ public class LinkedStack<E> implements Stack<E> {
     }
 
     @Override
-    public E peak() {
+    public boolean offer(E element) {
+        push(element);
+        return true;
+    }
+
+    @Override
+    public E peek() {
         if (top == null)
             return null;
         return top.data;
@@ -33,6 +41,20 @@ public class LinkedStack<E> implements Stack<E> {
     @Override
     public E pop() {
         Node<E> removedNode = top;
+        if (top == null)
+            throw new NoSuchElementException("Stack is empty, nothing to remove");
+
+        top = top.next;
+        removedNode.next = null;
+        size--;
+        return removedNode.data;
+    }
+
+    @Override
+    public E poll() {
+        Node<E> removedNode = top;
+        if (top == null)
+            return null;
 
         top = top.next;
         removedNode.next = null;

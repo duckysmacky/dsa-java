@@ -1,5 +1,7 @@
 package io.github.duckysmacky.dsa.collections.stack;
 
+import java.util.NoSuchElementException;
+
 /// A `Stack` implementation which has a **fixed** size (capacity). It is based on array and cannot grow in size
 ///
 /// @param <E> type of elements in the stack
@@ -7,40 +9,62 @@ public class ArrayStack<E> implements Stack<E> {
     private final Object[] innerArray;
     private final int capacity;
     private int size;
-    private int topIndex;
+    private int top;
 
-    /// Initiate a new `Sized Stack` of specified capacity
+    /// Initiate a new `Array Stack` of specified capacity
     public ArrayStack(int capacity) {
         this.innerArray = new Object[capacity];
         this.capacity = capacity;
         this.size = 0;
-        this.topIndex = -1;
+        this.top = -1;
     }
 
     @Override
     public void push(E element) {
-        if (size == capacity)
-            throw new IllegalStateException("Stack is full, cannot add new element");
+        if (size >= capacity)
+            throw new IllegalStateException("Stack is full, cannot add a new element");
 
-        topIndex++;
+        top++;
         size++;
-        innerArray[topIndex] = element;
+        innerArray[top] = element;
     }
 
     @Override
-    public E peak() {
-        if (topIndex == -1)
+    public boolean offer(E element) {
+        if (size >= capacity)
+            return false;
+
+        top++;
+        size++;
+        innerArray[top] = element;
+        return true;
+    }
+
+    @Override
+    public E peek() {
+        if (top == -1)
             return null;
-        return (E) innerArray[topIndex];
+        return (E) innerArray[top];
     }
 
     @Override
     public E pop() {
         if (size == 0)
-            throw new IllegalStateException("Stack is empty, nothing to remove");
+            throw new NoSuchElementException("Stack is empty, nothing to remove");
 
-        E removedElement = (E) innerArray[topIndex];
-        topIndex--;
+        E removedElement = (E) innerArray[top];
+        top--;
+        size--;
+        return removedElement;
+    }
+
+    @Override
+    public E poll() {
+        if (size == 0)
+            return null;
+
+        E removedElement = (E) innerArray[top];
+        top--;
         size--;
         return removedElement;
     }
@@ -69,7 +93,7 @@ public class ArrayStack<E> implements Stack<E> {
 
     @Override
     public void clear() {
-        topIndex = -1;
+        top = -1;
         size = 0;
     }
 
