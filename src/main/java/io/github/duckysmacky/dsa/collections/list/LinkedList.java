@@ -1,7 +1,7 @@
-package io.github.duckysmacky.dsa.data;
+package io.github.duckysmacky.dsa.collections.list;
 
-/// A linked list which consists of nodes. Each node is connected to the next one, with the last one being connected to
-/// nothing. The `head` node is the beginning of the list, while the `tail` is the end
+/// A singly linked list which consists of nodes. Each node is connected to the next one, with the last one being
+/// connected to nothing. The `head` node is the beginning of the list, while the `tail` is the end
 ///
 /// @param <E> the type of elements in a linked list
 public class LinkedList<E> {
@@ -219,6 +219,26 @@ public class LinkedList<E> {
         }
 
         return null;
+    }
+
+    /// Reverses the list in-place
+    ///
+    /// This is a `O(n)` operation
+    public void reverse() {
+        if (this.head == null) return;
+
+        Node<E> previous = null;
+        Node<E> current = this.head;
+
+        while (current.next != null) {
+            Node<E> next = current.next;
+            current.next = previous;
+            previous = current;
+            current = next;
+        }
+
+        this.tail = this.head;
+        this.head = current;
     }
 
     /// Returns the size (length) of the list

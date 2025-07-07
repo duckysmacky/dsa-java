@@ -1,10 +1,9 @@
-package io.github.duckysmacky.dsa.data;
+package io.github.duckysmacky.dsa.collections.list;
 
 /// A doubly linked list which consists of nodes. Each node is connected to the previous and the next one, with the
 /// last one being connected to nothing. The `head` node is the beginning of the list, while the `tail` is the end.
 ///
-/// A `Doubly Linked List`, unlike a basic `Linked List`, can be traversed both forward and backward. It also allows
-/// for an in-place `O(n)` reversal
+/// A `Doubly Linked List`, unlike a basic `Linked List`, can be traversed both forward and backward.
 ///
 /// @param <E> the type of elements in a linked list
 public class DoublyLinkedList<E> {
