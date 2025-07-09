@@ -1,9 +1,26 @@
 package io.github.duckysmacky.dsa.collections;
 
-/// An immutable heap-allocated sequence of elements. The most basic of the data structures. It has a **fixed** size
-/// and cannot grow
+import java.util.Arrays;
+
+/// An immutable heap-allocated sequence of elements. The most basic of the data structures, which has a **fixed**
+/// size (capacity) and cannot grow. This class also provides basic methods to interact with the array, like reversing.
 ///
-/// This is basically just a wrapper above Java's default `[]` array type
+/// This is basically just a wrapper above Java's default `[]` array type. It is almost identical to the basic Java
+/// array, but allows for generic type initialization, which is useful when using arrays in the other generic data
+/// structures as an internal structure.
+///
+/// #### Example
+/// ```
+/// T[] array = new T[5];
+/// ```
+/// The above **is not** allowed in Java and will lead to a **compiler error**. The only solution to this is to use a
+/// `Object[]` instead, which will require cast type checks. This is what this `Array` type uses internally.
+///
+/// Meanwhile, the following code **is** allowed and provides a better user experience when dealing with arrays of
+/// generic types, since you don't need to check cast type from `Object` to `T` every time:
+/// ```
+/// Array<T> array = new Array(5);
+/// ```
 ///
 /// @param <E> the type of stored elements
 public class Array<E> implements LinearCollection<E> {
@@ -33,15 +50,15 @@ public class Array<E> implements LinearCollection<E> {
 
     @Override
     public boolean isEmpty() {
-        for (Object e : inner)
-            if (inner != null) return false;
+        for (int i = 0; i < size; i++)
+            if (inner[i] != null) return false;
         return true;
     }
 
     @Override
     public boolean contains(E element) {
-        for (Object e : inner)
-            if (e.equals(element)) return true;
+        for (int i = 0; i < size; i++)
+            if (inner[i].equals(element)) return false;
         return false;
     }
 
@@ -51,24 +68,28 @@ public class Array<E> implements LinearCollection<E> {
             inner[i] = null;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public E[] toArray() {
         return (E[]) inner;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public E get(int index) {
-        if (index < -1 || index >= size)
+        if (index < 0 || index >= size)
             throw new ArrayIndexOutOfBoundsException(index);
 
         return (E) inner[index];
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public E getFirst() {
         return (E) inner[0];
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public E getLast() {
         return (E) inner[size - 1];
@@ -86,7 +107,7 @@ public class Array<E> implements LinearCollection<E> {
 
     @Override
     public void set(int index, E value) {
-        if (index < -1 || index >= size)
+        if (index < 0 || index >= size)
             throw new ArrayIndexOutOfBoundsException(index);
 
         this.inner[index] = value;
@@ -104,5 +125,15 @@ public class Array<E> implements LinearCollection<E> {
             left++;
             right--;
         }
+    }
+
+    @Override
+    public String toString() {
+        return Arrays.toString(inner);
+    }
+
+    @Override
+    public int hashCode() {
+        return Arrays.hashCode(inner);
     }
 }
