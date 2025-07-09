@@ -1,13 +1,36 @@
 # Data Structures and Algorithms
 
-This project presents custom implementations of different data structures and algorithms written in Java.
+This project consists of different classical data structure and algorithm implementations written in Java
 
 ## About
 
-This is a sandbox environment to practice my knowledge of different DSA topics. Java was selected for purely experience
-and overall development comfort reasons, so most of the presented data structures are implemented
-**language-independently**. 
+This project is mostly just a sandbox environment to practice my skills and knowledge of different DSA topics. Java was 
+selected for purely personal experience and overall development comfort reasons, so most of the presented concrete data 
+structures are implemented mostly **language-independent**. Meaning, this is almost exactly how they would be 
+implemented in any other language.
 
-Still, they include some Java-specific features, like exceptions. This was simply to make development easier and
-to provide myself some clean architectural design. My goal was to use as little of standard library classes and features 
-as possible and make everything dsa-related from the ground up.
+Still, I included some Java-specific features while implementing most of the data structures. This includes custom
+interfaces to allow for generic implementation of a given data structure. E.g., a generic `Stack` interface can be 
+implemented in two distinct ways: `ArrayStack` and `LinkedStack` (read on their differences from the Javadocs). 
+
+This is how most of the data structures are implemented in this project, allowing me to provide a hierarchical interface 
+inheritance and ability to choose a concrete implementation for a given generic data structure. This is also similar to
+know Java's own Collections API works.
+
+## Data Structure Hierarchy
+
+Here is a quick example of how a part of the `collections` hierarchy works:
+
+```
+Collection (I)
+|   LinearCollection (I)
+|   |   Array (C)
+|   |   List (I)
+|   |   |   ArrayList (C)
+|   |   |   LinkedList (C)
+|   |   |   DoublyLinkedList (C)
+etc.
+```
+- 
+- `(I)` - interface
+- `(C)` - class
