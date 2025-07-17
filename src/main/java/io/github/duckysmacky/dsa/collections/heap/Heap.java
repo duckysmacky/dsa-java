@@ -1,6 +1,7 @@
 package io.github.duckysmacky.dsa.collections.heap;
 
 import io.github.duckysmacky.dsa.collections.Collection;
+import io.github.duckysmacky.dsa.collections.list.ArrayList;
 import io.github.duckysmacky.dsa.collections.list.List;
 
 import java.util.Comparator;
@@ -15,12 +16,12 @@ import java.util.Comparator;
 ///
 /// @param <E> type of element in heap
 public class Heap<E extends Comparable<? super E>> implements Collection<E> {
-    private List<E> innerHeap;
-    private Comparator<E> comparator;
+    private final List<E> innerHeap;
+    private final Comparator<E> comparator;
 
     /// Private constructor so user can only choose between max-heap and min-heap
-    private Heap(Comparator<E> comparator, List<E> list) {
-        this.innerHeap = list;
+    private Heap(Comparator<E> comparator, List<E> elements) {
+        this.innerHeap = elements;
         this.comparator = comparator;
 
         for (int i = (innerHeap.size() / 2) - 1; i >= 0; i--) {
@@ -28,16 +29,30 @@ public class Heap<E extends Comparable<? super E>> implements Collection<E> {
         }
     }
 
-    /// Heapifies the provided list, creating a new Min-Heap. A Min-Heap will prioritize the smallest elements to be on
-    /// top
-    public static <T extends Comparable<? super T>> Heap<T> minHeapify(List<T> list) {
-        return new Heap<>(Comparator.naturalOrder(), list);
+    /// Heapifies the provided elements, creating a new Min-Heap. A Min-Heap will prioritize the smallest elements to be
+    /// on top
+    @SafeVarargs
+    public static <T extends Comparable<? super T>> Heap<T> minHeapify(T... elements) {
+        return new Heap<>(Comparator.naturalOrder(), ArrayList.of(elements));
     }
 
-    /// Heapifies the provided list, creating a new Max-Heap. A Max-Heap will prioritize the smallest elements to be on
-    /// top
-    public static <T extends Comparable<? super T>> Heap<T> maxHeapify(List<T> list) {
-        return new Heap<>(Comparator.reverseOrder(), list);
+    /// Heapifies the provided elements, creating a new Min-Heap. A Min-Heap will prioritize the smallest elements to be
+    /// on top
+    public static <T extends Comparable<? super T>> Heap<T> minHeapify(List<T> elements) {
+        return new Heap<>(Comparator.naturalOrder(), elements);
+    }
+
+    /// Heapifies the provided elements, creating a new Max-Heap. A Max-Heap will prioritize the smallest elements to be
+    /// on top
+    @SafeVarargs
+    public static <T extends Comparable<? super T>> Heap<T> maxHeapify(T... elements) {
+        return new Heap<>(Comparator.reverseOrder(), ArrayList.of(elements));
+    }
+
+    /// Heapifies the provided elements, creating a new Max-Heap. A Max-Heap will prioritize the smallest elements to be
+    /// on top
+    public static <T extends Comparable<? super T>> Heap<T> maxHeapify(List<T> elements) {
+        return new Heap<>(Comparator.reverseOrder(), elements);
     }
 
     /// Recursively heapifies downwards starting from the given index, comparing the node's value with its children's
@@ -48,14 +63,14 @@ public class Heap<E extends Comparable<? super E>> implements Collection<E> {
         int right = getRightChildIndex(index);
         int best = index;
 
-        if (index >= innerHeap.size() || left >= innerHeap.size() || right >= innerHeap.size())
+        if (index >= innerHeap.size())
             return;
 
-        if (comparator.compare(innerHeap.get(left), innerHeap.get(best)) < 0) {
+        if (left < innerHeap.size() && comparator.compare(innerHeap.get(left), innerHeap.get(best)) < 0) {
             best = left;
         }
 
-        if (comparator.compare(innerHeap.get(right), innerHeap.get(best)) < 0) {
+        if (right < innerHeap.size() && comparator.compare(innerHeap.get(right), innerHeap.get(best)) < 0) {
             best = right;
         }
 
@@ -119,8 +134,14 @@ public class Heap<E extends Comparable<? super E>> implements Collection<E> {
     /// element in the heap
     public E remove() {
         E removed = innerHeap.get(0);
-        innerHeap.set(0, innerHeap.remove(innerHeap.size() - 1));
-        heapifyDown(0);
+
+        if (innerHeap.size() > 1) {
+            innerHeap.set(0, innerHeap.remove(innerHeap.size() - 1));
+            heapifyDown(0);
+        } else {
+            innerHeap.set(0, null);
+        }
+
         return removed;
     }
 
