@@ -1,10 +1,12 @@
 package io.github.duckysmacky.dsa.collections.list;
 
+import io.github.duckysmacky.dsa.collections.deque.Deque;
+
 /// A singly linked list which consists of nodes. Each node is connected to the next one, with the last one being
 /// connected to nothing. The `head` node is the beginning of the list, while the `tail` is the end
 ///
 /// @param <E> the type of elements in a linked list
-public class LinkedList<E> {
+public class LinkedList<E> implements List<E>, Deque<E> {
     private Node<E> head;
     private Node<E> tail;
     private int size;
@@ -32,11 +34,12 @@ public class LinkedList<E> {
         this.size = elements.length;
     }
 
-    /// Adds data at the beginning of the list
+    /// Adds an element to the beginning of the list
     ///
     /// This is a `O(1)` operation
-    public void addStart(E data) {
-        Node<E> newNode = new Node<>(data);
+    @Override
+    public void addFirst(E element) {
+        Node<E> newNode = new Node<>(element);
 
         if (this.head != null)
             newNode.next = this.head;
@@ -47,11 +50,12 @@ public class LinkedList<E> {
         this.size++;
     }
 
-    /// Adds data to the end of the list
+    /// Adds an element to the end of the list
     ///
     /// This is a `O(1)` operation
-    public void addEnd(E data) {
-        Node<E> newNode = new Node<>(data);
+    @Override
+    public void addLast(E element) {
+        Node<E> newNode = new Node<>(element);
 
         if (this.tail != null)
             this.tail.next = newNode;
@@ -62,29 +66,48 @@ public class LinkedList<E> {
         this.size++;
     }
 
-    /// Adds data at the specified index. The value will be inserted right before the element at the provided index
+    @Override
+    public void add(E element) {
+        addLast(element);
+    }
+
+    /// Adds an element at the specified index. The value will be inserted right before the previous element at the
+    /// provided index
     ///
     /// This is a `O(n)` operation
-    public void addAt(int index, E data) {
-        if (index == 0)
-            addStart(data);
-        if (index == size - 1)
-            addEnd(data);
+    @Override
+    public void add(int index, E element) {
+        if (index == 0) {
+            addLast(element);
+            size++;
+            return;
+        }
 
-        Node<E> newNode = new Node<>(data);
+        Node<E> newNode = new Node<>(element);
 
         Node<E> currentNode = this.head;
         for (int i = 0; i < this.size; i++) {
             if (i == index - 1) {
                 newNode.next = currentNode.next;
                 currentNode.next = newNode;
-                break;
+                this.size++;
+                return;
             }
 
             currentNode = currentNode.next;
         }
+    }
 
-        this.size++;
+    @Override
+    public boolean offerFirst(E element) {
+        addFirst(element);
+        return true;
+    }
+
+    @Override
+    public boolean offerLast(E element) {
+        addLast(element);
+        return true;
     }
 
     /// Removes the element at the beginning of the list and returns it
@@ -92,7 +115,8 @@ public class LinkedList<E> {
     /// This is a `O(1)` operation
     ///
     /// @return removed element
-    public E removeStart() {
+    @Override
+    public E removeFirst() {
         Node<E> removedNode = this.head;
         if (removedNode == null) return null;
 
@@ -106,7 +130,8 @@ public class LinkedList<E> {
     /// This is a `O(n)` operation
     ///
     /// @return removed element
-    public E removeEnd() {
+    @Override
+    public E removeLast() {
         if (this.head == null) return null;
 
         Node<E> currentNode = this.head;
@@ -124,16 +149,22 @@ public class LinkedList<E> {
         return currentNode.data;
     }
 
+    @Override
+    public E remove() {
+        return removeLast();
+    }
+
     /// Removes the element at the specified index and returns it
     ///
     /// This is a `O(n)` operation
     ///
     /// @return removed element
-    public E removeAt(int index) {
+    @Override
+    public E remove(int index) {
         if (index == 0)
-            return removeStart();
+            return removeFirst();
         if (index == size - 1)
-            return removeEnd();
+            return removeLast();
 
         Node<E> removedNode = null;
         Node<E> currentNode = this.head;
@@ -153,29 +184,47 @@ public class LinkedList<E> {
         return removedNode.data;
     }
 
-    /// Sets the value for the first element of the list
-    ///
-    /// This is a `O(1)` operation
-    public void setStart(E value) {
-        this.head.data = value;
+    @Override
+    public E pollFirst() {
+        return removeFirst();
     }
 
-    /// Sets the data for the last element of the list
-    ///
-    /// This is a `O(1)` operation
-    public void setEnd(E value) {
-        this.tail.data = value;
+    @Override
+    public E pollLast() {
+        return removeLast();
     }
 
-    /// Sets the data for the element at the specified index
+    @Override
+    public void clear() {
+        // TODO
+    }
+
+    /// Replaces the first element of the list to the provided element
+    ///
+    /// This is a `O(1)` operation
+    @Override
+    public void setFirst(E element) {
+        this.head.data = element;
+    }
+
+    /// Replaces the last element of the list to the provided element
+    ///
+    /// This is a `O(1)` operation
+    @Override
+    public void setLast(E element) {
+        this.tail.data = element;
+    }
+
+    /// Replaces the element at the specified index the provided element
     ///
     /// This is a `O(n)` operation
-    public void setAt(int index, E value) {
+    @Override
+    public void set(int index, E element) {
         Node<E> currentNode = this.head;
 
         for (int i = 0; i < this.size; i++) {
             if (i == index) {
-                currentNode.data = value;
+                currentNode.data = element;
                 break;
             }
 
@@ -188,6 +237,7 @@ public class LinkedList<E> {
     /// This is a `O(1)` operation
     ///
     /// @return first element of the list
+    @Override
     public E getFirst() {
         if (this.head == null) return null;
         return this.head.data;
@@ -198,6 +248,7 @@ public class LinkedList<E> {
     /// This is a `O(1)` operation
     ///
     /// @return last element of the list
+    @Override
     public E getLast() {
         if (this.tail == null) return null;
         return this.tail.data;
@@ -208,7 +259,8 @@ public class LinkedList<E> {
     /// This is a `O(n)` operation
     ///
     /// @return element at the specified index
-    public E getAt(int index) {
+    @Override
+    public E get(int index) {
         Node<E> currentNode = this.head;
 
         for (int i = 0; i < this.size; i++) {
@@ -221,9 +273,22 @@ public class LinkedList<E> {
         return null;
     }
 
+    @Override
+    public int find(E element) {
+        // TODO
+        return -1;
+    }
+
+    @Override
+    public boolean contains(E element) {
+        // TODO
+        return false;
+    }
+
     /// Reverses the list in-place
     ///
     /// This is a `O(n)` operation
+    @Override
     public void reverse() {
         if (this.head == null) return;
 
@@ -241,11 +306,23 @@ public class LinkedList<E> {
         this.head = current;
     }
 
+    @Override
+    public boolean isEmpty() {
+        return head == null;
+    }
+
     /// Returns the size (length) of the list
     ///
     /// This is a `O(1)` operation
-    public int getSize() {
+    @Override
+    public int size() {
         return size;
+    }
+
+    @Override
+    public E[] toArray() {
+        // TODO
+        return null;
     }
 
     @Override
