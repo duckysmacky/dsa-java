@@ -1,6 +1,6 @@
 package io.github.duckysmacky.dsa.collections.list;
 
-import io.github.duckysmacky.dsa.collections.deque.Deque;
+import io.github.duckysmacky.dsa.collections.queue.Deque;
 
 /// A singly linked list which consists of nodes. Each node is connected to the next one, with the last one being
 /// connected to nothing. The `head` node is the beginning of the list, while the `tail` is the end
