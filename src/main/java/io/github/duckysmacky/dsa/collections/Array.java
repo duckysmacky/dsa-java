@@ -129,11 +129,32 @@ public class Array<E> implements LinearCollection<E> {
 
     @Override
     public String toString() {
-        return Arrays.toString(inner);
+        StringBuilder builder = new StringBuilder("[");
+
+        for (int i = 0; i < this.size; i++) {
+            if (inner[i] == null) continue;
+
+            builder.append(inner[i]);
+            builder.append(", ");
+        }
+
+        if (builder.length() > 2)
+            builder.delete(builder.length() - 2, builder.length());
+
+        builder.append("]");
+        return builder.toString();
     }
 
     @Override
     public int hashCode() {
         return Arrays.hashCode(inner);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof Array<?> array)
+            return Arrays.equals(this.inner, array.inner);
+
+        return false;
     }
 }
